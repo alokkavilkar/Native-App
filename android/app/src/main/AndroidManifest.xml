@@ -10,6 +10,8 @@
    <!-- common -->
    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
+   
+
    <!-- Add this line if your application always requires BLE. More info can be found on:
        https://developer.android.com/guide/topics/connectivity/bluetooth-le.html#permissions
      -->
