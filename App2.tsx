@@ -247,7 +247,7 @@ const App2 = () => {
 
     const senddata = (num: Number) => {
         const { id, service, ch } = devices;
-
+        console.log(id + " " + service + " " + ch);
         // [0x74, 0xc3, 0xa9, 0x73, 0x74] ==> 1
         var data: number[] = [];
         switch (num) {
