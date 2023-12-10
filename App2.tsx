@@ -149,7 +149,7 @@ const App2 = () => {
         setPeripherals(map => new Map(map.set(id, updatedPeripheral)));
     }
 
-    const handleDiscoverPeripheral = (peripheral: Peripheral) => {
+    const handleDiscoverPeripheral = async (peripheral: Peripheral) => {
         console.debug('[handleDiscoverPeripheral] new BLE peripheral= ', peripheral.name);
 
         if (!peripheral) {
@@ -159,8 +159,14 @@ const App2 = () => {
         if (!peripheral.name) {
             peripheral.name = 'No Name';
         }
-        // console.log("Peripherals" + peripheral.name);
-        addOrUpdatePeripheral(peripheral.id, peripheral);
+        else {
+            if (peripheral.name == 'ALOK') {
+                await BleManager.stopScan();
+                await connect(peripheral);
+            }
+            // console.log("Peripherals" + peripheral.name);
+            addOrUpdatePeripheral(peripheral.id, peripheral);
+        }
     }
 
     function sleep(ms: number) {
