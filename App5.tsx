@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, Button } from 'react-native';
 import Home from './Home';
 import Details from './Details';
+import { Main } from './Main';
 
 const FirstTimePage = ({navigation} : {navigation:any}) => {
     const [isFirstTime, setIsFirstTime] = useState(true);
@@ -13,13 +14,14 @@ const FirstTimePage = ({navigation} : {navigation:any}) => {
 
     const checkIfFirstTime = async () => {
         try {
-            const value = await AsyncStorage.getItem('@app:isFirstTime');
-            console.log(value);
-            if (value !== null && value === 'false') {
+            const value1 = await AsyncStorage.getItem('@app:isFirstTime');
+            console.log(value1);
+            const value2 = await AsyncStorage.getItem('@app:device');
+            console.log(value2);
+            if (value1 !== null && value1 === 'false' && value2 !== null && value2 !== "null") {
                 // Not the first time, so navigate away from this page
                 setIsFirstTime(false);
             } else {
-
                 await AsyncStorage.setItem('@app:isFirstTime', "false");
             }
         } catch (error) {
@@ -30,7 +32,7 @@ const FirstTimePage = ({navigation} : {navigation:any}) => {
     if (isFirstTime) {
         // Display the first time page
         return (
-            <Home navigation={navigation}/>
+            <Main navigation={navigation}/>
         );
     } else {
         let value = "";
@@ -45,11 +47,8 @@ const FirstTimePage = ({navigation} : {navigation:any}) => {
         const params = {value};
 
         return (
-          
-          <Details route={params} navigation={undefined} />
-
-
-        )// Or any other component or null if no content should be rendered
+          <Details route={params} navigation={navigation} />
+        )
     }
 };
 

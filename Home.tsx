@@ -68,7 +68,7 @@ const Home = ({ navigation }: { navigation: any }) => {
         setPeripherals(new Map<Peripheral['id'], Peripheral>());
         try {
             console.log("Scanning started");
-            BleManager.scan([], 10, true, { matchMode: BleScanMatchMode.Sticky, scanMode: BleScanMode.LowLatency, callbackType: BleScanCallbackType.AllMatches })
+            BleManager.scan([], 5, true, { matchMode: BleScanMatchMode.Sticky, scanMode: BleScanMode.LowLatency, callbackType: BleScanCallbackType.AllMatches })
                 .then(() => {
                     console.log("Scanning succesfull");
                     // console.log(serivce_uid);
@@ -130,41 +130,56 @@ const Home = ({ navigation }: { navigation: any }) => {
 
     return (
         <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
-        
+
             <TouchableOpacity
-                style={{ margin: 10, padding: 20, backgroundColor: "lightblue" }}
+                style={{ width: '90%', backgroundColor: '#007bff', margin: 20, padding: 20, borderRadius: 20 }}
                 onPress={enableBLE}
             >
-                <Text style={{ fontWeight: '400' }}>click to start bleuttoth</Text>
+                <Text style={{ color: "white", fontSize: 20, textAlign: 'center' }}>Enable Bluetooth/Location</Text>
             </TouchableOpacity>
 
-            <Pressable style={{ margin: 10, padding: 20, alignItems: 'center', backgroundColor: 'grey' }} onPress={startScan}>
-                <Text>
-                    Scan Bluetooth
-                </Text>
-            </Pressable>
-            <FlatList
+            <TouchableOpacity
+                style={{ width: '50%', backgroundColor: '#007bff', margin: 10, padding: 20, borderRadius: 20 }}
+                onPress={startScan}
+            >
+                <Text style={{ color: "white", fontSize: 20, textAlign: 'center' }}>Scan</Text>
+            </TouchableOpacity>
+
+            <FlatList style={{ width: '90%' }}
                 data={Array.from(peripherals.values())}
                 contentContainerStyle={{ rowGap: 12 }}
                 keyExtractor={item => item.id}
                 renderItem={item => (
                     <TouchableHighlight
-                        underlayColor="#0082FC"
-                        onPress={async ()=>{
-                            navigation.navigate("Details", {
-                            Pheripheral : item.item
-                        },
-                        AsyncStorage.setItem("@app:device", item.item.id).then((result)=>{
-                            console.log(result + " Done 👍 ");
-                        })
-                        )}}>
-                        <View >
-                            <Text>
-                                {item.item.name} - {item.item.advertising?.localName}
-                            </Text>
+                        style={{ backgroundColor: 'lightgrey', borderRadius: 20 }}
+                        underlayColor="#90EE90"
+                        onPress={
+                            async () => {
 
-                            <Text>RSSI: {item.item.rssi}</Text>
-                            <Text>{item.item.id}</Text>
+                                    navigation.navigate("Details", {
+                                    Pheripheral : item.item
+                                    
+                                })
+                                if(item.item.id)
+                                {
+                                    AsyncStorage.setItem("@app:device", item.item.id).then((result)=>{
+                                        console.log(result + " Done 👍 ");
+                                    })
+                                }
+
+                                if(item.item.name)
+                                {
+                                    AsyncStorage.setItem("@app:name", item.item.name).then((result)=>{
+                                        console.log(result + " Done 👍 ");
+                                    })
+                                }
+                            }}>
+                        <View style={{ padding: 20 }}>
+                            <View style={{flex:1, flexDirection:'row', justifyContent:'space-between'}}>
+                                <Text style={{ fontSize: 20 }}>{item.item.advertising?.localName}</Text>
+                                <Text style={{ fontSize: 20 }}>{item.item.rssi}</Text>
+                            </View>
+                            <Text style={{ fontSize: 15 }}>{item.item.id}</Text>
                         </View>
                     </TouchableHighlight>
                 )}
