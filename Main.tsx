@@ -7,10 +7,10 @@ export const Main = ({ navigation }: { navigation: any }) => {
             <View style={styles.buttonContainer}>
                 <Pressable style={{ margin: '30%', backgroundColor: '#20c997', padding: 30, width: '60%', borderRadius: 30 }}onPress={() => { console.log("clicked screen 1"); navigation.navigate("Scan")}}
                 >
-                    <Text style={styles.buttonText}>Screen 1</Text>
+                    <Text style={styles.buttonText}>Single Watch</Text>
                 </Pressable>
-                <Pressable style={{ backgroundColor: '#20c997', padding: 30, width: '60%', borderRadius: 30 }}>
-                    <Text style={styles.buttonText}>Screen 2</Text>
+                <Pressable style={{ backgroundColor: '#20c997', padding: 30, width: '60%', borderRadius: 30 }} onPress={()=>{console.log("Work in Progress of the Second Application.")}}>
+                    <Text style={styles.buttonText}>Dual Watch</Text>
                 </Pressable>
             </View>
         </View>

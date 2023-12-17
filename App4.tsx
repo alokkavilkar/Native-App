@@ -18,7 +18,7 @@ const App4 = () => {
   return (
     <NavigationContainer >
       <Stack.Navigator  >
-        <Stack.Screen name="Home"  component={FirstTimePage} />
+        <Stack.Screen name="Home" options={{headerTitleAlign:'center',}}  component={FirstTimePage} />
         <Stack.Screen name="Details" component={Details} />
         <Stack.Screen name="Main" component={Main} />
         <Stack.Screen name="Scan"  options={({ navigation, route })=>({

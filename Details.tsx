@@ -2,6 +2,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import React, { useEffect, useState } from "react";
 import { Button, NativeEventEmitter, NativeModules, Text, ToastAndroid, TouchableOpacity, View } from "react-native";
 import BleManager, { BleDisconnectPeripheralEvent, BleScanCallbackType, BleScanMatchMode, BleScanMode, Peripheral } from 'react-native-ble-manager'
+import Sound from "react-native-sound";
 const BleManagerModule = NativeModules.BleManager;
 const bleManagerEmitter = new NativeEventEmitter(BleManagerModule);
 
@@ -23,6 +24,31 @@ const Details = ({ route, navigation }: { route: any, navigation: any }) => {
 
     useEffect(() => {
         connect(s);
+        BleManager.checkState()
+        .then((val)=>{
+            console.log(val);
+
+            if(val === 'off')
+            {
+                
+                var whoosh = new Sound('turnbluetoothon.mp3', Sound.MAIN_BUNDLE, (error) => {
+                    if (error) {
+                        console.log('failed to load the sound', error);
+                        return;
+                    }
+                    // Play the sound with an onEnd callback
+                    whoosh.play((success) => {
+                        if (success) {
+                            console.log('successfully finished playing');
+                            setConnected(false);
+                        } else {
+                            console.log('playback failed due to audio decoding errors');
+                        }
+                    });
+                });
+            }
+        })
+
         const getStoredDeviceID = async () => {
             try {
                 const storedDeviceID = await AsyncStorage.getItem("@app:device");
@@ -43,6 +69,7 @@ const Details = ({ route, navigation }: { route: any, navigation: any }) => {
                     }
                     else {
                         setConnected(true);
+
                         ToastAndroid.show("Still Connected", ToastAndroid.LONG);
                     }
                 }
@@ -126,6 +153,22 @@ const Details = ({ route, navigation }: { route: any, navigation: any }) => {
 
                 getConnected();
 
+                var whoosh = new Sound('connected.mp3', Sound.MAIN_BUNDLE, (error) => {
+                    if (error) {
+                        console.log('failed to load the sound', error);
+                        return;
+                    }
+
+                    // Play the sound with an onEnd callback
+                    whoosh.play((success) => {
+                        if (success) {
+                            console.log('successfully finished playing');
+                        } else {
+                            console.log('playback failed due to audio decoding errors');
+                        }
+                    });
+                });
+
                 if (data.characteristics) {
                     for (let characteristic of data.characteristics) {
                         if (characteristic.descriptors) {
@@ -151,6 +194,21 @@ const Details = ({ route, navigation }: { route: any, navigation: any }) => {
             setConnected(false);
             ToastAndroid.show("Disconnected check bluetooth connection", ToastAndroid.SHORT);
             console.log("Error occur..." + err);
+            var whoosh = new Sound('watchblue.mp3', Sound.MAIN_BUNDLE, (error) => {
+                if (error) {
+                    console.log('failed to load the sound', error);
+                    return;
+                }
+    
+                // Play the sound with an onEnd callback
+                whoosh.play((success) => {
+                    if (success) {
+                        console.log('successfully finished playing');
+                    } else {
+                        console.log('playback failed due to audio decoding errors');
+                    }
+                });
+            });
         }
     }
 
@@ -209,6 +267,23 @@ const Details = ({ route, navigation }: { route: any, navigation: any }) => {
         setConnected(false);
         disconnect(s);
         AsyncStorage.setItem("@app:device", "null");
+        var whoosh = new Sound('disconnected.mp3', Sound.MAIN_BUNDLE, (error) => {
+            if (error) {
+                console.log('failed to load the sound', error);
+                return;
+            }
+            // loaded successfully
+            console.log('duration in seconds: ' + whoosh.getDuration() + 'number of channels: ' + whoosh.getNumberOfChannels());
+
+            // Play the sound with an onEnd callback
+            whoosh.play((success) => {
+                if (success) {
+                    console.log('successfully finished playing');
+                } else {
+                    console.log('playback failed due to audio decoding errors');
+                }
+            });
+        });
         navigation.navigate("Scan");
 
     };
@@ -239,69 +314,59 @@ const Details = ({ route, navigation }: { route: any, navigation: any }) => {
             <View style={{ display: 'flex', flexDirection: 'row' }}>
                 <TouchableOpacity
                     style={{ width: '45%', backgroundColor: '#007bff', margin: 10, padding: 15, borderRadius: 20 }}
-                    onPress={() => {senddata(1)}}
+                    onPress={() => { senddata(1) }}
                 >
                     <Text style={{ color: "white", fontSize: 20, textAlign: 'center', fontFamily: 'Arial', }}>1</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                     style={{ width: '45%', backgroundColor: '#007bff', margin: 10, padding: 15, borderRadius: 20 }}
-                    onPress={() => {senddata(2)}}
+                    onPress={() => { senddata(4) }}
                 >
                     <Text style={{ color: "white", fontSize: 20, textAlign: 'center', fontFamily: 'Arial', }}>2</Text>
                 </TouchableOpacity>
             </View>
 
+
+
             <View style={{ display: 'flex', flexDirection: 'row' }}>
                 <TouchableOpacity
                     style={{ width: '45%', backgroundColor: '#007bff', margin: 10, padding: 15, borderRadius: 20 }}
-                    onPress={() => {senddata(3)}}
+                    onPress={() => { senddata(5) }}
                 >
-                    <Text style={{ color: "white", fontSize: 20, textAlign: 'center', fontFamily: 'Arial', }}>3</Text>
+                    <Text style={{ color: "white", fontSize: 20, textAlign: 'center', fontFamily: 'Arial', }}>A</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                     style={{ width: '45%', backgroundColor: '#007bff', margin: 10, padding: 15, borderRadius: 20 }}
-                    onPress={() => {senddata(4)}}
+                    onPress={() => { senddata(6) }}
                 >
-                    <Text style={{ color: "white", fontSize: 20, textAlign: 'center', fontFamily: 'Arial', }}>4</Text>
+                    <Text style={{ color: "white", fontSize: 20, textAlign: 'center', fontFamily: 'Arial', }}>B</Text>
                 </TouchableOpacity>
+            </View>
+            <View style={{ display: 'flex', flexDirection: 'row' }}>
+                <TouchableOpacity
+                    style={{ width: '45%', backgroundColor: '#007bff', margin: 10, padding: 15, borderRadius: 20 }}
+                    onPress={() => { senddata(7) }}
+                >
+                    <Text style={{ color: "white", fontSize: 20, textAlign: 'center', fontFamily: 'Arial', }}>C</Text>
+                </TouchableOpacity>
+
             </View>
 
             <View style={{ display: 'flex', flexDirection: 'row' }}>
                 <TouchableOpacity
                     style={{ width: '45%', backgroundColor: '#007bff', margin: 10, padding: 15, borderRadius: 20 }}
-                    onPress={() => {senddata(5)}}
+                    onPress={() => { senddata(9) }}
                 >
-                    <Text style={{ color: "white", fontSize: 20, textAlign: 'center', fontFamily: 'Arial', }}>5</Text>
+                    <Text style={{ color: "white", fontSize: 20, textAlign: 'center', fontFamily: 'Arial', }}>Mute</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                     style={{ width: '45%', backgroundColor: '#007bff', margin: 10, padding: 15, borderRadius: 20 }}
-                    onPress={() => {senddata(6)}}
-                >
-                    <Text style={{ color: "white", fontSize: 20, textAlign: 'center', fontFamily: 'Arial', }}>6</Text>
-                </TouchableOpacity>
-            </View>
-            <View style={{ display: 'flex', flexDirection: 'row' }}>
-                <TouchableOpacity
-                    style={{ width: '45%', backgroundColor: '#007bff', margin: 10, padding: 15, borderRadius: 20 }}
-                    onPress={() => {senddata(7)}}
-                >
-                    <Text style={{ color: "white", fontSize: 20, textAlign: 'center', fontFamily: 'Arial', }}>7</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                    style={{ width: '45%', backgroundColor: '#007bff', margin: 10, padding: 15, borderRadius: 20 }}
-                    onPress={() => {senddata(8)}}
+                    onPress={() => { senddata(8) }}
                 >
                     <Text style={{ color: "white", fontSize: 20, textAlign: 'center', fontFamily: 'Arial', }}>Scan</Text>
                 </TouchableOpacity>
+
             </View>
-
-            <TouchableOpacity
-                style={{ width: '45%', backgroundColor: '#007bff', margin: 10, padding: 15, borderRadius: 20 }}
-                onPress={() => {senddata(9)}}
-            >
-                <Text style={{ color: "white", fontSize: 20, textAlign: 'center', fontFamily: 'Arial', }}>Mute</Text>
-            </TouchableOpacity>
-
 
             <TouchableOpacity
                 style={{ width: '90%', backgroundColor: '#dc3545', margin: 10, padding: 15, borderRadius: 20 }}
